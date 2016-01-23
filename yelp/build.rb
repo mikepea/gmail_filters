@@ -12,8 +12,32 @@ fs = GmailBritta.filterset(:me => ['mikepea@yelp.com']) do
   }
 
   filter {
+    has %w{to:operations+s3complete@}
+    label 'Systems/s3complete'
+    never_spam
+  }.archive_unless_directed
+
+  filter {
     has %w{from:operations+diskquota@}
     label 'Systems/other-folks-diskquota'
+    never_spam
+  }.archive_unless_directed
+
+  filter {
+    has %w{from:batch@ list(<operations.yelp.com>)}
+    label 'Systems/batch-spam'
+    never_spam
+  }.archive_unless_directed
+
+  filter {
+    has %w{from:batch@ list(<infra.yelp.com>)}
+    label 'Systems/batch-spam'
+    never_spam
+  }.archive_unless_directed
+
+  filter {
+    has %w{to:no-reply+jenkins@ list(<inframan.yelp.com>)}
+    label 'Systems/jenkins-spam'
     never_spam
   }.archive_unless_directed
 
@@ -32,6 +56,12 @@ fs = GmailBritta.filterset(:me => ['mikepea@yelp.com']) do
   filter {
     has %w{from:root@ list:(<inframan.yelp.com>)}
     label 'Systems/inframan-rootspam'
+    never_spam
+  }.archive_unless_directed
+
+  filter {
+    has %w{from:batch@ list:(<inframan.yelp.com>)}
+    label 'Systems/inframan-batchspam'
     never_spam
   }.archive_unless_directed
 
