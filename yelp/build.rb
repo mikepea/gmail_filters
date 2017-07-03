@@ -12,6 +12,79 @@ fs = GmailBritta.filterset(:me => ['mikepea@yelp.com']) do
   }
 
   filter {
+    has %w{to:mikepea@yelp.com}
+    label '__TO_ME'
+    never_spam
+  }
+
+  filter {
+    has [{:or => %w{
+      to:engineering-social-ldn@yelp.com
+      cc:engineering-social-ldn@yelp.com
+    }}]
+    label '_EngSocial'
+    never_spam
+  }
+
+  filter {
+    has [{:or => %w{
+      to:goats@yelp.com
+      cc:goats@yelp.com
+    }}]
+    label 'Goats'
+    never_spam
+  }.archive
+
+  filter {
+    has [{:and => %w{
+      from:jira@yelp.com
+      subject:"[JIRA]"
+    }}]
+    label 'JIRA'
+    never_spam
+  }.archive_unless_directed
+
+  filter {
+    has [{:and => %w{
+      to:ubuntu-security-announce@lists.ubuntu.com
+    }}]
+    label 'Vendors/USN'
+    never_spam
+  }.archive
+
+  filter {
+    has [{:or => %w{
+      to:engineering-social@yelp.com
+      cc:engineering-social@yelp.com
+      to:engineering-social-sf@yelp.com
+      cc:engineering-social-sf@yelp.com
+      to:engineering-social-ham@yelp.com
+      cc:engineering-social-ham@yelp.com
+    }}]
+    label '_EngSocial'
+    never_spam
+  }.archive_unless_directed
+
+  filter {
+    has [{:or => %w{
+      from:no-reply+jenkins@yelp.com
+    }}]
+    label 'Jenkins'
+    never_spam
+  }.archive_unless_directed
+
+  filter {
+    has [{:or => %w{
+      to:metrics-standup@yelp.com
+      to:distsys-standup@yelp.com
+      to:perf-standup@yelp.com
+      to:team-releng@yelp.com cc:team-releng@yelp.com
+    }}]
+    label '_INFRA/_TeamStandups'
+    never_spam
+  }.archive
+
+  filter {
     has %w{to:operations+s3complete@}
     label 'Systems/s3complete'
     never_spam
@@ -30,6 +103,12 @@ fs = GmailBritta.filterset(:me => ['mikepea@yelp.com']) do
   }.archive_unless_directed
 
   filter {
+    has %w{from:batch@ list(<team-operations.yelp.com>)}
+    label 'Systems/batch-spam'
+    never_spam
+  }.archive_unless_directed
+
+  filter {
     has %w{from:batch@ list(<infra.yelp.com>)}
     label 'Systems/batch-spam'
     never_spam
@@ -42,8 +121,10 @@ fs = GmailBritta.filterset(:me => ['mikepea@yelp.com']) do
   }.archive_unless_directed
 
   filter {
-    has %w{list:(<inframan.yelp.com>) subject:"Review Request"}
-    label '_INFRA/non-ops-reviewboards'
+    has [{:and => %w{
+      subject:"Review Request"
+    }}]
+    label '_reviewboard'
     never_spam
   }.archive_unless_directed
 
@@ -78,6 +159,12 @@ fs = GmailBritta.filterset(:me => ['mikepea@yelp.com']) do
   }.archive_unless_directed
 
   filter {
+    has %w{to:systems+cron@ list:(<operations.yelp.com>)}
+    label 'Systems/cronjunk'
+    never_spam
+  }.archive_unless_directed
+
+  filter {
     has %w{to:root@ subject:Cron}
     label 'Systems/cronjunk'
     never_spam
@@ -86,6 +173,12 @@ fs = GmailBritta.filterset(:me => ['mikepea@yelp.com']) do
   filter {
     has %w{list:(<operations.yelp.com>) to:root@}
     label 'Systems/rootjunk'
+    never_spam
+  }.archive_unless_directed
+
+  filter {
+    has %w{list:(<inframan.yelp.com>) subject:"Your aggregated cProfiles are ready"}
+    label 'Inframan/perf-spam'
     never_spam
   }.archive_unless_directed
 
@@ -112,12 +205,6 @@ fs = GmailBritta.filterset(:me => ['mikepea@yelp.com']) do
     label 'Lists/engineering'
     never_spam
   }
-
-  filter {
-    has %w{list:(<engineering.yelp.com>)}
-    label '__TeamInbox'
-    never_spam
-  }.archive_unless_directed
 
   filter {
     has %w{list:(<caskforce.yelp.com>)}
