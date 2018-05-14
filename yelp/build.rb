@@ -19,10 +19,29 @@ fs = GmailBritta.filterset(:me => ['mikepea@yelp.com']) do
 
   filter {
     has [{:or => %w{
+      to:opsman@yelp.com
+      cc:opsman@yelp.com
+    }}]
+    label '__opsman'
+    never_spam
+  }
+
+  filter {
+    has [{:or => %w{
       to:engineering-social-ldn@yelp.com
       cc:engineering-social-ldn@yelp.com
     }}]
     label '_EngSocial'
+    never_spam
+  }
+
+  filter {
+    has [{:and => %w{
+      from:operations@yelp.com
+      replyto:support@cloudflare.com
+      subject:Cloudflare
+    }}]
+    label 'Cloudflare'
     never_spam
   }
 
@@ -37,10 +56,49 @@ fs = GmailBritta.filterset(:me => ['mikepea@yelp.com']) do
 
   filter {
     has [{:and => %w{
-      from:jira@yelp.com
-      subject:"[JIRA]"
+      from:docs.google.com
     }}]
-    label 'JIRA'
+    label 'gdocs'
+    never_spam
+  }
+
+  filter {
+    has [{:and => %w{
+      from:splunk@yelp.com
+    }}]
+    label 'Splunk'
+    never_spam
+  }.archive_unless_directed
+
+  filter {
+    has [{:and => %w{
+      from:no-reply@ripe.net
+    }}]
+    label 'RIPE'
+    never_spam
+  }.archive_unless_directed
+
+  filter {
+    has [{:and => %w{
+      from:no-reply@ns1.com
+    }}]
+    label 'NS1'
+    never_spam
+  }.archive_unless_directed
+
+  filter {
+    has [{:and => %w{
+      from:no-reply@pagerduty.com
+    }}]
+    label 'Pagerduty'
+    never_spam
+  }
+
+  filter {
+    has [{:and => %w{
+      to:neteng+aaisp@yelp.com
+    }}]
+    label 'neteng'
     never_spam
   }.archive_unless_directed
 
