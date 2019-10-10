@@ -1,7 +1,12 @@
-.PHONY: yelp
+.PHONY: work
+
+all: home work
 
 env:
 	bundle install
 
-yelp:
-	yelp/build.rb > yelp/yelp.xml
+home:
+	home/build.rb > home.xml
+
+work:
+	work/build.rb > work.xml
